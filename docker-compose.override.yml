@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  database:
+    volumes:
+      - "./.data:/var/lib/mysql"
+  web:
+    build:
+      dockerfile: ./docker/web/Dockerfile
+      context: .
+    volumes:
+      - "./symfony:/var/www/symfony:rw"
+    environment:
+      APP_ENV: dev

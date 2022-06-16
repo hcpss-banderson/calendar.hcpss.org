@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  database:
+    container_name: calendar_db
+    image: mariadb:10.8.3
+    environment:
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${MARIADB_DATABASE}
+      MARIADB_USER: ${MARIADB_USER}
+      MARIADB_PASSWORD: ${MARIADB_USER}
+
+  web:
+    container_name: calendar_web
+    image: reg.hcpss.org/calendar/web:0.1.0
+    ports:
+      - "9099:80"
+    environment:
+      DATABASE_URL: "mysql://${MARIADB_USER}:${MARIADB_USER}@database:3306/${MARIADB_DATABASE}?serverVersion=mariadb-10.8.3&charset=utf8mb4"

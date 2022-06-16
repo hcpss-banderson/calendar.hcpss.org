@@ -1,0 +1,43 @@
+{% extends 'calendar/base.html.twig' %}
+
+{% block title %}HCPSS Calendar Agenda{% endblock %}
+
+{% block content %}
+    <table class="table agenda">
+        <tbody>
+        {% set prev_event = events[0] %}
+        {% for event in events %}
+            {% if event.start|date('Y-m-d') != prev_event.start|date('Y-m-d') or loop.first %}
+                <tr class="date-title">
+                    <td colspan="2">
+                        <h6 class="title is-6">
+                            <time datetime="{{ event.start|date('Y-m-d') }}">{{ event.start|date('l, F j') }}</time>
+                        </h6>
+                    </td>
+                </tr>
+            {% endif %}
+                <tr>
+                    {% if not event.isAllDay %}
+                        <td class="time">
+                            <time datetime="{{ event.start|date('c') }}">{{ event.start|date('g:i a') }}</time> -
+                            <time datetime="{{ event.end|date('c') }}">{{ event.end|date('g:i a') }}</time>
+                        </td>
+                    {% endif %}
+
+                    <td{% if event.isAllDay %} colspan="2"{% endif %}>
+                        <div class="occurrence-title">
+                            {{ event.title }}
+                            {% if event.title == 'A' or event.title == 'B' %}
+                                - day
+                            {% endif %}
+                        </div>
+                        {% if event.description %}
+                            <div>{{ event.description|raw|nl2br }}</div>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% set prev_event = event %}
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

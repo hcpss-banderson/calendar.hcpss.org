@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HCPSS Calendars{% endblock %}
+
+{% block body %}
+<ul>
+    {% for calendar in calendars %}
+    <li><a href="{{ path('calendar', {'slug': calendar.slug}) }}">{{ calendar.title }}</a></li>
+    {% endfor %}
+</ul>
+
+
+{% endblock %}

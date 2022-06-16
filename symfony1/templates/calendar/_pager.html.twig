@@ -1,0 +1,6 @@
+<div class="news-pager contents">
+    <p>
+        <span class="news-prev"><a href="{{ path(route, params|merge({'page': current_page - 1})) }}">← Previous</a></span>
+        <span class="news-next"><a href="{{ path(route, params|merge({'page': current_page + 1})) }}">Next →</a></span>
+    </p>
+</div>

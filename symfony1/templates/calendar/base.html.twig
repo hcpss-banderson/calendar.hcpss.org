@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <header>
+        {{ render(controller('App\\Controller\\DefaultController::tabs')) }}
+    </header>
+
+    <div class="calendar-wrapper">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        {{ render(controller('App\\Controller\\DefaultController::pager')) }}
+    </footer>
+{% endblock %}

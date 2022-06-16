@@ -1,0 +1,14 @@
+<nav class="secondary-nav">
+    <div class="secondary-nav__inner">
+        <input class="second-state" type="checkbox" name="second-nav-state" id="secondary-nav--toggle" autocomplete="off">
+        <h2>{{ base_date|date('F Y') }}</h2>
+        <label class="secondary-nav__inner--toggle-btn" tabindex="0" for="secondary-nav--toggle"><span class="secondary-nav__inner--hidden">Secondary Navigation</span></label>
+        <ul class="secondary-nav__collapsable">
+            {% for route, name in items %}
+                <li{% if route == current_route %} class="is-active"{% endif %}>
+                    <a href="{{ path(route, {'slug': slug}) }}">{{ name }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>

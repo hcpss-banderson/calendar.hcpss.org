@@ -1,0 +1,136 @@
+{% extends 'calendar/base.html.twig' %}
+
+{% block title %}HCPSS Calendar Monthy{% endblock %}
+
+{% block content %}
+    <table class="calendar">
+        <thead>
+            <tr>
+                <th scope="col">Sunday</th>
+                <th scope="col">Monday</th>
+                <th scope="col">Tuesday</th>
+                <th scope="col">Wednesday</th>
+                <th scope="col">Thursday</th>
+                <th scope="col">Friday</th>
+                <th scope="col">Saturday</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for day in repo.days %}
+            {% if day.date|date('w') == 0 %}
+                <tr>
+            {% endif %}
+
+            {%
+                set classes = [
+                    "now"|date('Y-m-d') == day.date|date('Y-m-d') ? 'active',
+                    day.modifiers ? day.modifiers|join(' '),
+                ] | filter(v => v)
+            %}
+            <td{% if classes %} class="{{ classes|join(' ') }}"{% endif %}>
+                <div class="day-number">
+                    {% if day.date|date('j') == 1 %}{{ day.date|date('M') }}{% endif %}
+                    {{ day.date|date('j') }}
+                </div>
+                {% if day.occurrences %}
+                    <div class="occurrence">
+                        {% for occurrence in day.occurrences %}
+                            <div class="occurrence-title">
+                                <button class="js-modal-trigger" data-target="occurrence-modal-{{ occurrence.id }}">
+                                    {{ occurrence.title }}
+                                </button>
+                            </div>
+
+                            <div class="modal" id="occurrence-modal-{{ occurrence.id }}">
+                                <div class="modal-background"></div>
+                                <div class="modal-card">
+                                    <header class="modal-card-head">
+                                        <p class="modal-card-title">{{ occurrence.title }}</p>
+                                        <button class="delete" aria-label="close"></button>
+                                    </header>
+                                    <section class="modal-card-body">
+                                        {% if not occurrence.isAllDay %}
+                                            <div class="occurrence-time">
+                                                <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('g:i a') }}</time> -
+                                                <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>
+                                            </div>
+                                        {% endif %}
+                                        {% if occurrence.description %}
+                                            <div clas="occurrence-description">{{ occurrence.description|nl2p|raw }}</div>
+                                        {% endif %}
+                                    </section>
+                                    <footer class="modal-card-foot">
+                                        <button class="button">Close</button>
+                                    </footer>
+                                </div>
+
+                            </div>
+
+{#                            {% if not occurrence.isAllDay %}#}
+{#                                <div class="occurrence-time">#}
+{#                                    <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('g:i a') }}</time> -#}
+{#                                    <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>#}
+{#                                </div>#}
+{#                            {% endif %}#}
+{#                            {% if occurrence.description %}#}
+{#                                <div clas="occurrence-description">{{ occurrence.description|raw|nl2br }}</div>#}
+{#                            {% endif %}#}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </td>
+
+            {% if day.date|date('w') == 6 %}
+                </tr>
+            {% endif %}
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Functions to open and close a modal
+            function openModal($el) {
+                $el.classList.add('is-active');
+            }
+
+            function closeModal($el) {
+                $el.classList.remove('is-active');
+            }
+
+            function closeAllModals() {
+                (document.querySelectorAll('.modal') || []).forEach(($modal) => {
+                    closeModal($modal);
+                });
+            }
+
+            // Add a click event on buttons to open a specific modal
+            (document.querySelectorAll('.js-modal-trigger') || []).forEach(($trigger) => {
+                const modal = $trigger.dataset.target;
+                const $target = document.getElementById(modal);
+
+                $trigger.addEventListener('click', () => {
+                    openModal($target);
+                });
+            });
+
+            // Add a click event on various child elements to close the parent modal
+            (document.querySelectorAll('.modal-background, .modal-close, .modal-card-head .delete, .modal-card-foot .button') || []).forEach(($close) => {
+                const $target = $close.closest('.modal');
+
+                $close.addEventListener('click', () => {
+                    closeModal($target);
+                });
+            });
+
+            // Add a keyboard event to close all modals
+            document.addEventListener('keydown', (event) => {
+                const e = event || window.event;
+
+                if (e.keyCode === 27) { // Escape key
+                    closeAllModals();
+                }
+            });
+        });
+    </script>
+{% endblock %}
