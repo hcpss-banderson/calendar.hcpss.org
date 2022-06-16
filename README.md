@@ -9,6 +9,11 @@ cp env.dist .env
 # Launch containers.
 docker-compose up -d
 
+# Install dependencies.
+docker exec calendar_web composer install
+
+# Initialize the database.
+
 # Add the calendars.
 docker exec calendar_web ./bin/console app:calendar:add \
   "Title of the calendar. Like 'HCPSS Events'" \
