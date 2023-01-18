@@ -19,4 +19,11 @@ COPY symfony/.env             /var/www/symfony/.env
 
 RUN mkdir -p /var/www/symfony/var \
 	&& composer install -d /var/www/symfony \
-	&& chown -R www-data:www-data /var/www/symfony \
+	&& chown -R www-data:www-data /var/www/symfony
+
+COPY docker/web/entrypoint.sh /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 80
+
+CMD ["apache2-foreground"]

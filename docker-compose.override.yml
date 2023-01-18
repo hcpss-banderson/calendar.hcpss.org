@@ -11,4 +11,4 @@ services:
     volumes:
       - "./symfony:/var/www/symfony:rw"
     environment:
-      APP_ENV: dev
+      APP_ENV: prod
