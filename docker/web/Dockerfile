@@ -10,6 +10,7 @@ COPY symfony/bin              /var/www/symfony/bin
 COPY symfony/config           /var/www/symfony/config
 COPY symfony/src              /var/www/symfony/src
 COPY symfony/templates        /var/www/symfony/templates
+COPY symfony/migrations       /var/www/symfony/migrations
 COPY symfony/composer.json    /var/www/symfony/composer.json
 COPY symfony/composer.lock    /var/www/symfony/composer.lock
 COPY symfony/public/css       /var/www/symfony/public/css

@@ -13,6 +13,7 @@ docker-compose up -d
 docker exec calendar_web composer install
 
 # Initialize the database.
+docker exec calendar_web ./bin/console doctrine:migrations:migrate
 
 # Add the calendars.
 docker exec calendar_web ./bin/console app:calendar:add \
