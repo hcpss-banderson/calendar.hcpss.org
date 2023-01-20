@@ -49,20 +49,22 @@ class DataRefreshCommand extends Command
         $calendars = $this->em->getRepository(Calendar::class)->findAll();
         foreach ($calendars as $calendar) {
             /** @var Calendar $calendar */
-            $ical = new ICal($calendar->getSources(), [
-                'defaultTimeZone' => 'America/New_York',
-                'defaultWeekStart' => 'SU',
-            ]);
+            foreach ($calendar->getSources() as $source) {
+                $ical = new ICal($source, [
+                    'defaultTimeZone' => 'America/New_York',
+                    'defaultWeekStart' => 'SU',
+                ]);
 
-            foreach ($ical->events() as $event) {
-                $occurrence = Occurrence::fromIcal($event);
-                $occurrence->setCalendar($calendar);
+                foreach ($ical->events() as $event) {
+                    $occurrence = Occurrence::fromIcal($event);
+                    $occurrence->setCalendar($calendar);
 
-                $this->em->persist($occurrence);
-                $num_events++;
+                    $this->em->persist($occurrence);
+                    $num_events++;
+                }
+
+                $this->em->flush();
             }
-
-            $this->em->flush();
         }
 
         $io->success("{$num_events} occurrences created.");

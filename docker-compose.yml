@@ -10,6 +10,12 @@ services:
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
 
+  cal:
+    container_name: calendar_ical
+    image: nginx
+    volumes:
+      - ./calendar.ics:/usr/share/nginx/html/calendar.ics
+
   web:
     container_name: calendar_web
     image: reg.hcpss.org/calendar/web:1.0.0
