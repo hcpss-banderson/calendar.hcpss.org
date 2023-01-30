@@ -50,7 +50,7 @@ class DefaultController extends AbstractController
         }
 
         $page      = intval($request->query->get('page', 0));
-        $baseDate  = (new DateTimeImmutable())->add(DateInterval::createFromDateString("$page weeks"));
+        $baseDate  = $this->baseDate($page);
         $startDate = $baseDate->modify('last Sunday');
         $endDate   = $baseDate->modify('next Sunday');
 
@@ -80,7 +80,7 @@ class DefaultController extends AbstractController
         }
 
         $page      = intval($request->query->get('page', 0));
-        $baseDate  = (new DateTimeImmutable())->add(DateInterval::createFromDateString("$page months"));
+        $baseDate  = $this->baseDate($page);
         $startDate = $baseDate->modify('first day of this month')->modify('last Sunday');
         $endDate   = $baseDate->modify('last day of this month')->modify('next Sunday');
 
@@ -177,6 +177,6 @@ class DefaultController extends AbstractController
      */
     private function baseDate(int $page): DateTimeImmutable
     {
-        return (new DateTimeImmutable())->add(DateInterval::createFromDateString("+".($page*28)." days"));
+        return (new DateTimeImmutable(date('Y').'-'.date('m').'-01'))->add(DateInterval::createFromDateString("$page months"));
     }
 }

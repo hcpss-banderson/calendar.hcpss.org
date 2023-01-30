@@ -18,7 +18,7 @@ services:
 
   web:
     container_name: calendar_web
-    image: reg.hcpss.org/calendar/web:1.0.2
+    image: reg.hcpss.org/calendar/web:1.0.3
     ports:
       - "9099:80"
     environment:
