@@ -110,7 +110,7 @@ class DefaultController extends AbstractController
         }
 
         $page = intval($request->query->get('page', 0));
-        $baseDate = (new DateTimeImmutable())->add(DateInterval::createFromDateString("$page months"));
+        $baseDate = $this->baseDate($page);
 
         $occurrences = $em->getRepository(Occurrence::class)->findBetweenDates(
             $baseDate->modify('first day of this month'),
@@ -151,10 +151,11 @@ class DefaultController extends AbstractController
      */
     public function tabs(RequestStack $stack, EntityManagerInterface $em): Response
     {
-        $page = $stack->getMainRequest()->query->get('page', 0);
+
         $slug = $stack->getMainRequest()->get('_route_params')['slug'];
         $route = $stack->getMainRequest()->get('_route');
-        $baseDate = (new DateTimeImmutable())->add(DateInterval::createFromDateString("$page months"));
+        $page = $stack->getMainRequest()->query->get('page', 0);
+        $baseDate = $this->baseDate($page);
 
         $items = [
             'agenda' => 'Agenda',
@@ -168,5 +169,14 @@ class DefaultController extends AbstractController
             'current_route' => $route,
             'base_date' => $baseDate,
         ]);
+    }
+
+    /**
+     * @param int $page
+     * @return DateTimeImmutable
+     */
+    private function baseDate(int $page): DateTimeImmutable
+    {
+        return (new DateTimeImmutable())->add(DateInterval::createFromDateString("+".($page*28)." days"));
     }
 }
