@@ -4,6 +4,9 @@ namespace App\Command;
 
 use App\Entity\Calendar;
 use App\Entity\Occurrence;
+use DateInterval;
+use DatePeriod;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use ICal\ICal;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -56,11 +59,29 @@ class DataRefreshCommand extends Command
                 ]);
 
                 foreach ($ical->events() as $event) {
-                    $occurrence = Occurrence::fromIcal($event);
-                    $occurrence->setCalendar($calendar);
+                    $start = new DateTimeImmutable($event->dtstart_tz);
+                    $end = new DateTimeImmutable($event->dtend_tz);
 
-                    $this->em->persist($occurrence);
-                    $num_events++;
+                    if (($end->getTimestamp() - $start->getTimestamp()) > (60 * 60 * 24)) {
+                        $interval = DateInterval::createFromDateString('1 day');
+                        $period = new DatePeriod($start, $interval, $end);
+                        foreach ($period as $dt) {
+                            $occurrence = new Occurrence(
+                                $event->summary,
+                                $dt,
+                                $dt->add(DateInterval::createFromDateString('1 day')),
+                                $event->description
+                            );
+                            $occurrence->setCalendar($calendar);
+                            $this->em->persist($occurrence);
+                            $num_events++;
+                        }
+                    } else {
+                        $occurrence = Occurrence::fromIcal($event);
+                        $occurrence->setCalendar($calendar);
+                        $this->em->persist($occurrence);
+                        $num_events++;
+                    }
                 }
 
                 $this->em->flush();
