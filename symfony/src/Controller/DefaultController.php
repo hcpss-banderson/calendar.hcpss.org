@@ -114,7 +114,7 @@ class DefaultController extends AbstractController
 
         $occurrences = $em->getRepository(Occurrence::class)->findBetweenDates(
             $baseDate->modify('first day of this month'),
-            $baseDate->modify('last day of this month'),
+            $baseDate->modify('first day of next month'),
             $calendar
         );
 
