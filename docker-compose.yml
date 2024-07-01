@@ -1,5 +1,4 @@
-version: '3'
-
+---
 services:
   database:
     container_name: calendar_db
@@ -18,7 +17,7 @@ services:
 
   web:
     container_name: calendar_web
-    image: reg.hcpss.org/calendar/web:1.0.5
+    image: reg.hcpss.org/calendar/web:${VERSION:-dev}
     ports:
       - "9099:80"
     environment:

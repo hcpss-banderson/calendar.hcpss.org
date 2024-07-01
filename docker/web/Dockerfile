@@ -1,6 +1,7 @@
 FROM banderson/symfony:base
 
 ENV APP_ENV="prod"
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 COPY docker/web/config/php.ini          /usr/local/etc/php/php.ini
 COPY docker/web/config/000-default.conf /etc/apache2/sites-available/000-default.conf

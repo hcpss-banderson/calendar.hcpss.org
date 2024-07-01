@@ -59,6 +59,10 @@ class DataRefreshCommand extends Command
                 ]);
 
                 foreach ($ical->events() as $event) {
+                    if (!$event->summary) {
+                        continue;
+                    }
+
                     $start = new DateTimeImmutable($event->dtstart_tz);
                     $end = new DateTimeImmutable($event->dtend_tz);
 

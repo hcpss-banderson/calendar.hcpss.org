@@ -12,3 +12,4 @@ services:
       - "./symfony:/var/www/symfony:rw"
     environment:
       APP_ENV: dev
+    entrypoint: tail -f /dev/null
