@@ -12,7 +12,7 @@ class DayRepository {
     /**
      * @var Day[]
      */
-    private $days;
+    private $days = [];
 
     /**
      * @return Day[]
