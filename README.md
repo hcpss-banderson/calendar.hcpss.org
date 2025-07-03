@@ -28,8 +28,24 @@ docker exec calendar_web ./bin/console app:calendar:add \
   "HCPSS System Calendar" \
   hcpss \
   https://www.google.com/calendar/ical/howard.county.public.schools%40gmail.com/public/basic.ics \
+  --ignore-rrules
+  
+docker exec calendar_web ./bin/console app:calendar:add \
+  "Board Calendar" \
+  hcpss \
   https://www.google.com/calendar/ical/53tttfm4sd0vai54mnrnpn1q5o%40group.calendar.google.com/public/basic.ics \
-  https://calendar.google.com/calendar/ical/537on0svjl80bon1j075a8fep0%40group.calendar.google.com/public/basic.ics
+  --ignore-rrules
+  
+docker exec calendar_web ./bin/console app:calendar:add \
+  "A/B Days" \
+  hcpss \
+  https://calendar.google.com/calendar/ical/537on0svjl80bon1j075a8fep0%40group.calendar.google.com/public/basic.ics \
+  --ignore-rrules
+  
+docker exec calendar_web ./bin/console app:calendar:add \
+  "SFES Judy Center" \
+  sfesjudycenter \
+  https://calendar.google.com/calendar/ical/c_e2949cc055a2d13098f573707b5240f3f4365e67d864da15920a1a95724b55e0%40group.calendar.google.com/public/basic.ics
 
 # Fetch the events from the calendar(s).
 docker exec calendar_web ./bin/console app:data:refresh

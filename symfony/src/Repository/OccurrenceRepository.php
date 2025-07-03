@@ -3,10 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Calendar;
+use App\Entity\Event;
 use App\Entity\Occurrence;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -53,19 +55,22 @@ class OccurrenceRepository extends ServiceEntityRepository
     /**
      * @param DateTime $start
      * @param DateTime $end
-     * @param Calendar|null $calendar
+     * @param Calendar[]|null $calendars
      * @return array
      */
-    public function findBetweenDates(DateTimeImmutable $start, DateTimeImmutable $end, Calendar $calendar = null): array
+    public function findBetweenDates(DateTimeImmutable $start, DateTimeImmutable $end, ?array $calendars): array
     {
         $builder = $this->createQueryBuilder('o')
             ->andWhere('o.start >= :start')
             ->andWhere('o.end <= :end');
 
-        if ($calendar) {
+        if ($calendars) {
             $builder
-                ->andWhere('o.calendar = :calendar_id')
-                ->setParameter(':calendar_id', $calendar->getId());
+                ->join(Event::class, 'e', Join::WITH, 'o.event = e.id')
+                ->andWhere('e.calendar IN (:calendar_ids)')
+                ->setParameter(':calendar_ids', array_map(function (Calendar $calendar) {
+                    return $calendar->getId();
+                }, $calendars));
         }
 
         $builder

@@ -41,30 +41,9 @@
                                 </button>
                             </div>
 
-                            <div class="modal" id="occurrence-modal-{{ occurrence.id }}">
-                                <div class="modal-background"></div>
-                                <div class="modal-card">
-                                    <header class="modal-card-head">
-                                        <p class="modal-card-title">{{ occurrence.title }}</p>
-                                        <button class="delete" aria-label="close"></button>
-                                    </header>
-                                    <section class="modal-card-body">
-                                        {% if not occurrence.isAllDay %}
-                                            <div class="occurrence-time">
-                                                <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('g:i a') }}</time> -
-                                                <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>
-                                            </div>
-                                        {% endif %}
-                                        {% if occurrence.description %}
-                                            <div clas="occurrence-description">{{ occurrence.description|nl2p|raw }}</div>
-                                        {% endif %}
-                                    </section>
-                                    <footer class="modal-card-foot">
-                                        <button class="button">Close</button>
-                                    </footer>
-                                </div>
 
-                            </div>
+
+
 
 {#                            {% if not occurrence.isAllDay %}#}
 {#                                <div class="occurrence-time">#}
@@ -75,9 +54,11 @@
 {#                            {% if occurrence.description %}#}
 {#                                <div clas="occurrence-description">{{ occurrence.description|raw|nl2br }}</div>#}
 {#                            {% endif %}#}
+                            {% include 'calendar/_event_modal.html.twig' with { occurrence: occurrence } %}
                         {% endfor %}
                     </div>
                 {% endif %}
+
             </td>
 
             {% if day.date|date('w') == 6 %}

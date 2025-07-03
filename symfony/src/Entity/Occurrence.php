@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\OccurrenceRepository;
 use DateTimeImmutable;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ICal\Event as IcalEvent;
 
@@ -15,50 +16,21 @@ class Occurrence
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $title;
-
-    #[ORM\Column(type: 'text', nullable: true)]
-    private $description;
-
     #[ORM\Column(type: 'datetime_immutable')]
     private $start;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private $end;
 
-    #[ORM\ManyToOne(targetEntity: Calendar::class, inversedBy: 'occurrences')]
+    #[ORM\ManyToOne(inversedBy: 'occurrences')]
     #[ORM\JoinColumn(nullable: false)]
-    private $calendar;
+    private ?Event $event = null;
 
-    /**
-     * @param string $title
-     * @param DateTimeImmutable $start
-     * @param DateTimeImmutable $end
-     * @param string|null $description
-     */
-    public function __construct(string $title, DateTimeImmutable $start, DateTimeImmutable $end, string $description = null)
-    {
-        $this->title = $title;
-        $this->description = $description;
-        $this->start = $start;
-        $this->end = $end;
-    }
+    #[ORM\Column(length: 255)]
+    private ?string $title = null;
 
-    /**
-     * @param IcalEvent $ical
-     * @return static
-     * @throws \Exception
-     */
-    public static function fromIcal(IcalEvent $ical): self
-    {
-        return new self(
-            $ical->summary,
-            new DateTimeImmutable($ical->dtstart_tz),
-            new DateTimeImmutable($ical->dtend_tz),
-            $ical->description,
-        );
-    }
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $description = null;
 
     /**
      * Get the id.
@@ -68,52 +40,6 @@ class Occurrence
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    /**
-     * Get the title.
-     *
-     * @return string
-     */
-    public function getTitle(): string
-    {
-        return $this->title;
-    }
-
-    /**
-     * Set the title.
-     *
-     * @param string $title
-     * @return $this
-     */
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Get the description.
-     *
-     * @return string|null
-     */
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    /**
-     * Set the description.
-     *
-     * @param string|null $description
-     * @return $this
-     */
-    public function setDescription(?string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
     }
 
     /**
@@ -163,29 +89,6 @@ class Occurrence
     }
 
     /**
-     * Get calendar.
-     *
-     * @return Calendar|null
-     */
-    public function getCalendar(): ?Calendar
-    {
-        return $this->calendar;
-    }
-
-    /**
-     * Set the calendar.
-     *
-     * @param Calendar|null $calendar
-     * @return $this
-     */
-    public function setCalendar(?Calendar $calendar): self
-    {
-        $this->calendar = $calendar;
-
-        return $this;
-    }
-
-    /**
      * Is this an all dat event?
      *
      * @return bool
@@ -193,5 +96,41 @@ class Occurrence
     public function isAllDay(): bool
     {
         return $this->start->diff($this->end)->format('%d') === '1';
+    }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): static
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): static
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
     }
 }

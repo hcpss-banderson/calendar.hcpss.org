@@ -30,8 +30,12 @@ class DefaultController extends AbstractController
     {
         $calendars = $em->getRepository(Calendar::class)->findAll();
 
+        $slugs = array_map(function (Calendar $calendar) {
+            return $calendar->getSlug();
+        }, $calendars);
+
         return $this->render('calendar/index.html.twig', [
-            'calendars' => $calendars,
+            'slugs' => array_unique($slugs),
         ]);
     }
 
@@ -74,8 +78,8 @@ class DefaultController extends AbstractController
     #[Route("/calendar/{slug}/month", name: "month")]
     public function month(Request $request, string $slug, EntityManagerInterface $em): Response
     {
-        $calendar = $em->getRepository(Calendar::class)->findOneBy(['slug' => $slug]);
-        if (!$calendar) {
+        $calendars = $em->getRepository(Calendar::class)->findBy(['slug' => $slug]);
+        if (empty($calendars)) {
             throw new NotFoundHttpException();
         }
 
@@ -85,7 +89,7 @@ class DefaultController extends AbstractController
         $endDate   = $baseDate->modify('last day of this month')->modify('next Sunday');
 
         $occurrences = $em->getRepository(Occurrence::class)
-            ->findBetweenDates($startDate, $endDate, $calendar);
+            ->findBetweenDates($startDate, $endDate, $calendars);
 
         $dayRepo = new DayRepository();
         foreach ($occurrences as $occurrence) {
@@ -119,7 +123,7 @@ class DefaultController extends AbstractController
         );
 
         return $this->render('calendar/agenda.html.twig', [
-            'events' => $occurrences,
+            'occurrences' => $occurrences,
         ]);
     }
 

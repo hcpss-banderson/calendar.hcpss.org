@@ -2,6 +2,7 @@
 
 namespace App\Model;
 
+use App\Entity\Event;
 use App\Entity\Occurrence;
 use DateTimeInterface;
 
@@ -40,6 +41,19 @@ class Day {
     public function getOccurrences(): array
     {
         return $this->occurrences;
+    }
+
+    /**
+     * @return Event[]
+     */
+    public function getEvents(): array
+    {
+        $events = [];
+        foreach ($this->occurrences as $occurrence) {
+            $event = $occurrence->getEvent();
+            $events[$event->getId()] = $event;
+        }
+        return $events;
     }
 
     /**

@@ -36,15 +36,15 @@ class CalendarListCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
         $table = new Table($output);
-        $table->setHeaders(['Title', 'Slug', 'Sources']);
+        $table->setHeaders(['Title', 'Slug', 'Source', 'Ignore Rrules']);
         $calendars = $this->em->getRepository(Calendar::class)->findAll();
         foreach ($calendars as $calendar) {
             $row = [
                 $calendar->getTitle(),
                 $calendar->getSlug(),
-                implode("\n", $calendar->getSources()),
+                $calendar->getSource(),
+                $calendar->isIgnoreRrule(),
             ];
             $table->addRow($row);
         }

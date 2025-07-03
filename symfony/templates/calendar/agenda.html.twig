@@ -5,38 +5,40 @@
 {% block content %}
     <table class="table agenda">
         <tbody>
-        {% set prev_event = events[0] %}
-        {% for event in events %}
-            {% if event.start|date('Y-m-d') != prev_event.start|date('Y-m-d') or loop.first %}
+        {% set prev_occurrence = occurrences[0] %}
+        {% for occurrence in occurrences %}
+            {% if occurrence.start|date('Y-m-d') != prev_occurrence.start|date('Y-m-d') or loop.first %}
                 <tr class="date-title">
                     <td colspan="2">
                         <h6 class="title is-6">
-                            <time datetime="{{ event.start|date('Y-m-d') }}">{{ event.start|date('l, F j') }}</time>
+                            <time datetime="{{ occurrence.start|date('Y-m-d') }}">
+                                {{ occurrence.start|date('l, F j') }}
+                            </time>
                         </h6>
                     </td>
                 </tr>
             {% endif %}
                 <tr>
-                    {% if not event.isAllDay %}
+                    {% if not occurrence.isAllDay %}
                         <td class="time">
-                            <time datetime="{{ event.start|date('c') }}">{{ event.start|date('g:i a') }}</time> -
-                            <time datetime="{{ event.end|date('c') }}">{{ event.end|date('g:i a') }}</time>
+                            <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('g:i a') }}</time> -
+                            <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>
                         </td>
                     {% endif %}
 
-                    <td{% if event.isAllDay %} colspan="2"{% endif %}>
+                    <td{% if occurrence.isAllDay %} colspan="2"{% endif %}>
                         <div class="occurrence-title">
-                            {{ event.title }}
-                            {% if event.title == 'A' or event.title == 'B' %}
+                            {{ occurrence.title }}
+                            {% if occurrence.title == 'A' or occurrence.title == 'B' %}
                                 - day
                             {% endif %}
                         </div>
-                        {% if event.description %}
-                            <div>{{ event.description|raw|nl2br }}</div>
+                        {% if occurrence.description %}
+                            <div>{{ occurrence.description|raw|nl2br }}</div>
                         {% endif %}
                     </td>
                 </tr>
-            {% set prev_event = event %}
+            {% set prev_occurrence = occurrence %}
         {% endfor %}
         </tbody>
     </table>

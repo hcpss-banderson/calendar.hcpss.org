@@ -4,10 +4,9 @@
 
 {% block body %}
 <ul>
-    {% for calendar in calendars %}
-    <li><a href="{{ path('calendar', {'slug': calendar.slug}) }}">{{ calendar.title }}</a></li>
+    {% for slug in slugs %}
+    <li><a href="{{ path('calendar', {'slug': slug}) }}">{{ slug }}</a></li>
     {% endfor %}
 </ul>
-
 
 {% endblock %}

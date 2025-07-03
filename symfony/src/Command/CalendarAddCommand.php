@@ -8,6 +8,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -37,7 +38,8 @@ class CalendarAddCommand extends Command
         $this
             ->addArgument('title', InputArgument::REQUIRED, 'Human readable name of the calendar.')
             ->addArgument('slug', InputArgument::REQUIRED, 'Machine readable slug.')
-            ->addArgument('sources', InputArgument::IS_ARRAY | InputArgument::REQUIRED, 'A list of ical sources.')
+            ->addArgument('source', InputArgument::REQUIRED, 'An ical sources.')
+            ->addOption('ignore-rrules', null, InputOption::VALUE_NONE, 'Ignore rrules in output.')
         ;
     }
 
@@ -46,12 +48,13 @@ class CalendarAddCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $title = $input->getArgument('title');
         $slug = $input->getArgument('slug');
-        $sources = $input->getArgument('sources');
+        $source = $input->getArgument('source');
 
         $calendar = (new Calendar())
             ->setTitle($title)
             ->setSlug($slug)
-            ->setSources($sources);
+            ->setSource($source)
+            ->setIgnoreRrule($input->getOption('ignore-rrules'));
 
         $this->em->persist($calendar);
         $this->em->flush();

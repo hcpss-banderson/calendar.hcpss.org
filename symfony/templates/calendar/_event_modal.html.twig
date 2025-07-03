@@ -1,0 +1,32 @@
+<div class="modal" id="occurrence-modal-{{ occurrence.id }}">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">{{ occurrence.title }}</p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            {% if not occurrence.isAllDay %}
+                <div class="occurrence-time is-italic my-3">
+                    <strong>When:</strong>
+                    <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('l, F jS, g:i a') }}</time> -
+                    <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>
+                </div>
+            {% endif %}
+
+            {% if occurrence.event.rrule and not occurrence.event.calendar.ignoreRrule %}
+                <div class="occurrence-time is-italic my-3">
+                    <strong>Schedule:</strong>
+                    {{ occurrence.event.rrule|rrule }}
+                </div>
+            {% endif %}
+
+            {% if occurrence.description %}
+                <div class="occurrence-description my-3">{{ occurrence.description|nl2p|raw }}</div>
+            {% endif %}
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button">Close</button>
+        </footer>
+    </div>
+</div>
