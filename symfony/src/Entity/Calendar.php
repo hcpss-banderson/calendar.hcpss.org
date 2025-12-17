@@ -27,9 +27,13 @@ class Calendar
     #[ORM\Column(type: 'string', length: 100)]
     private $title;
 
+    #[ORM\ManyToMany(targetEntity: Feed::class, mappedBy: 'calendars')]
+    private Collection $feeds;
+
     public function __construct()
     {
         $this->occurrences = new ArrayCollection();
+        $this->feeds = new ArrayCollection();
     }
 
     /**
@@ -140,6 +144,33 @@ class Calendar
     public function setTitle(string $title): self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Feed>
+     */
+    public function getFeeds(): Collection
+    {
+        return $this->feeds;
+    }
+
+    public function addFeed(Feed $feed): static
+    {
+        if (!$this->feeds->contains($feed)) {
+            $this->feeds->add($feed);
+            $feed->addCalendar($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFeed(Feed $feed): static
+    {
+        if ($this->feeds->removeElement($feed)) {
+            $feed->removeCalendar($this);
+        }
 
         return $this;
     }

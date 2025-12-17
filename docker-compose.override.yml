@@ -2,6 +2,7 @@ services:
   database:
     volumes:
       - "./.data:/var/lib/mysql"
+      - "./dump.sql:/docker-entrypoint-initdb.d/symfony.sql"
   web:
     build:
       dockerfile: ./docker/web/Dockerfile
@@ -10,4 +11,4 @@ services:
       - "./symfony:/var/www/symfony:rw"
     environment:
       APP_ENV: dev
-    entrypoint: tail -f /dev/null
+    #entrypoint: tail -f /dev/null

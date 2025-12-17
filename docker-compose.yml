@@ -2,7 +2,7 @@
 services:
   database:
     container_name: calendar_db
-    image: mariadb:10.8.6
+    image: mariadb:lts
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}

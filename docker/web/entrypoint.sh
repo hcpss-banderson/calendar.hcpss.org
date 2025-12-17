@@ -12,6 +12,8 @@ while ! mysqladmin ping -h"database" --silent; do
 done
 
 ./bin/console cache:clear
-./bin/console doctrine:migrations:migrate
+./bin/console doctrine:migrations:migrate --no-interaction
+./bin/console app:feed:migrate
+./bin/console app:feed:fill-cache
 
 exec "$@"

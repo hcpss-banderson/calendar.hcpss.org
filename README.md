@@ -29,7 +29,8 @@ docker exec calendar_web ./bin/console app:calendar:add \
   hcpss \
   https://www.google.com/calendar/ical/howard.county.public.schools%40gmail.com/public/basic.ics \
   https://www.google.com/calendar/ical/53tttfm4sd0vai54mnrnpn1q5o%40group.calendar.google.com/public/basic.ics \
-  https://calendar.google.com/calendar/ical/537on0svjl80bon1j075a8fep0%40group.calendar.google.com/public/basic.ics
+  https://calendar.google.com/calendar/ical/537on0svjl80bon1j075a8fep0%40group.calendar.google.com/public/basic.ics \
+  https://calendar.google.com/calendar/ical/58e6223a8e58d3fb75b3f3286bc566bd2f9e7bb631bed8499d4d219e4a454bb7%40group.calendar.google.com/public/basic.ics
 
 # Fetch the events from the calendar(s).
 docker exec calendar_web ./bin/console app:data:refresh

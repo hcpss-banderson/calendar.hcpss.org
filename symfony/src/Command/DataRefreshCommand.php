@@ -4,6 +4,7 @@ namespace App\Command;
 
 use App\Entity\Calendar;
 use App\Entity\Occurrence;
+use App\FeedService;
 use DateInterval;
 use DatePeriod;
 use DateTimeImmutable;
@@ -11,9 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use ICal\ICal;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
@@ -28,9 +27,12 @@ class DataRefreshCommand extends Command
      */
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    private FeedService $feedService;
+
+    public function __construct(EntityManagerInterface $em, FeedService $feedService)
     {
         $this->em = $em;
+        $this->feedService = $feedService;
         parent::__construct();
     }
 
@@ -52,11 +54,16 @@ class DataRefreshCommand extends Command
         $calendars = $this->em->getRepository(Calendar::class)->findAll();
         foreach ($calendars as $calendar) {
             /** @var Calendar $calendar */
-            foreach ($calendar->getSources() as $source) {
-                $ical = new ICal($source, [
+            foreach ($calendar->getFeeds() as $feed) {
+                if (!$feed->getIcs()) {
+                    $this->feedService->fillCache($feed);
+                }
+
+                $ical = new ICal(false, [
                     'defaultTimeZone' => 'America/New_York',
                     'defaultWeekStart' => 'SU',
                 ]);
+                $ical->initString($feed->getIcs());
 
                 foreach ($ical->events() as $event) {
                     if (!$event->summary) {
