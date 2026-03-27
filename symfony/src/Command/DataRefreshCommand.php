@@ -55,9 +55,9 @@ class DataRefreshCommand extends Command
         foreach ($calendars as $calendar) {
             /** @var Calendar $calendar */
             foreach ($calendar->getFeeds() as $feed) {
-                if (!$feed->getIcs()) {
+                //if (!$feed->getIcs()) {
                     $this->feedService->fillCache($feed);
-                }
+                //}
 
                 $ical = new ICal(false, [
                     'defaultTimeZone' => 'America/New_York',
