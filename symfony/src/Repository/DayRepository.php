@@ -91,7 +91,7 @@ class DayRepository {
 
         $endDate = $last->format('w') == '6'
             ? $last
-            : $last->modify('next Saturday');
+            : $last->modify('next Sunday');
 
         return $month
             ->setDays($days)
