@@ -24,6 +24,31 @@ class DayRepository {
     }
 
     /**
+     * @return self[]
+     * @throws \DateMalformedPeriodStringException
+     */
+    public function getMonths(): array
+    {
+        ksort($this->days);
+        $end = end($this->days)->getDate();
+        $start = reset($this->days)->getDate();
+        $interval = new DateInterval('P1M');
+        $period = new DatePeriod($start, $interval, $end);
+
+        $months = [];
+        foreach ($period as $date) {
+            $repo = new self();
+            foreach ($this->getDays() as $day) {
+                if ($date->format('m') === $day->getDate()->format('m')) {
+                    $repo->addDay($day);
+                }
+            }
+            $months[] = $repo;
+        }
+        return $months;
+    }
+
+    /**
      * @param Day[] $days
      * @return DayRepository
      */
@@ -53,20 +78,44 @@ class DayRepository {
         return $this->days[$key] ?? null;
     }
 
+    public function padMonth(): DayRepository
+    {
+        $month = new self();
+        $days  = $this->getDays();
+        $last  = end($days)->getDate();
+        $first = reset($days)->getDate();
+
+        $startDate = $first->format('w') == '0'
+            ? $first
+            : $first->modify('last Sunday');
+
+        $endDate = $last->format('w') == '6'
+            ? $last
+            : $last->modify('next Saturday');
+
+        return $month
+            ->setDays($days)
+            ->fillDates($startDate, $endDate, [Day::DISABLED_DAY]);
+    }
+
     /**
      * @param DateTimeInterface $start
      * @param DateTimeInterface $end
+     * @param string[] $modifiers
+     *   The modifiers to add to filled days.
      * @return DayRepository
      */
-    public function fillDates(DateTimeInterface $start, DateTimeInterface $end): DayRepository
+    public function fillDates(DateTimeInterface $start, DateTimeInterface $end, ?array $modifiers = []): DayRepository
     {
         $period = new DatePeriod($start, new DateInterval('P1D'), $end);
         foreach ($period as $date) {
             if (!array_key_exists($date->format('Y-m-d'), $this->days)) {
-                $this->addDay(new Day($date));
+                $day = new Day($date);
+                $day->setModifiers($modifiers);
+                $this->addDay($day);
             }
         }
-
+        ksort($this->days);
         return $this;
     }
 }

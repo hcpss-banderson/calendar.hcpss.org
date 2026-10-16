@@ -2,7 +2,9 @@
 
 {% block body %}
     <header>
-        {{ render(controller('App\\Controller\\DefaultController::tabs')) }}
+        {% block header %}
+            {{ render(controller('App\\Controller\\DefaultController::tabs')) }}
+        {% endblock %}
     </header>
 
     <div class="calendar-wrapper">

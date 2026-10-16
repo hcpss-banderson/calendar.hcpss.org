@@ -56,25 +56,14 @@
                                             </div>
                                         {% endif %}
                                         {% if occurrence.description %}
-                                            <div clas="occurrence-description">{{ occurrence.description|nl2p|raw }}</div>
+                                            <div class="occurrence-description">{{ occurrence.description|nl2p|raw }}</div>
                                         {% endif %}
                                     </section>
                                     <footer class="modal-card-foot">
                                         <button class="button">Close</button>
                                     </footer>
                                 </div>
-
                             </div>
-
-{#                            {% if not occurrence.isAllDay %}#}
-{#                                <div class="occurrence-time">#}
-{#                                    <time datetime="{{ occurrence.start|date('c') }}">{{ occurrence.start|date('g:i a') }}</time> -#}
-{#                                    <time datetime="{{ occurrence.end|date('c') }}">{{ occurrence.end|date('g:i a') }}</time>#}
-{#                                </div>#}
-{#                            {% endif %}#}
-{#                            {% if occurrence.description %}#}
-{#                                <div clas="occurrence-description">{{ occurrence.description|raw|nl2br }}</div>#}
-{#                            {% endif %}#}
                         {% endfor %}
                     </div>
                 {% endif %}

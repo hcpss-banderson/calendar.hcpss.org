@@ -11,6 +11,7 @@ class Day {
     public const MODIFIERS_B_DAY = 'b-day';
     public const PARTIAL_DAY = 'partial-day';
     public const CLOSED_DAY = 'closed-day';
+    public const DISABLED_DAY = 'disabled';
 
     /**
      * @var Occurrence[]

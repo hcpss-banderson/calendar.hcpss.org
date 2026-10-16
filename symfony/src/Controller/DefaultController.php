@@ -71,6 +71,41 @@ class DefaultController extends AbstractController
         ]);
     }
 
+    #[Route("/calendar/{slug}/fiscal-year", name: "fiscal-year")]
+    public function fiscalYear(Request $request, string $slug, EntityManagerInterface $em): Response
+    {
+        $calendar = $em->getRepository(Calendar::class)->findOneBy(['slug' => $slug]);
+        if (!$calendar) {
+            throw new NotFoundHttpException();
+        }
+
+        $page      = intval($request->query->get('page', 0));
+        $baseDate  = $this->baseDate(intval($page) * 12);
+
+        $startYear = intval($baseDate->format('n')) > 7
+            ? intval($baseDate->format('Y'))
+            : intval($baseDate->format('Y')) + 1;
+        $endYear   = $startYear + 1;
+
+        $startDate = new DateTimeImmutable("{$startYear}-08-01 00:00:00");
+        $endDate = new DateTimeImmutable("{$endYear}-07-31 00:00:00");
+
+        $occurrences = $em->getRepository(Occurrence::class)
+            ->findBetweenDates($startDate, $endDate, $calendar);
+
+        $dayRepo = new DayRepository();
+        foreach ($occurrences as $occurrence) {
+            $day = $dayRepo->getDay($occurrence->getStart()) ?: new Day($occurrence->getStart());
+            $day->addOccurrence($occurrence);
+            $dayRepo->addDay($day);
+        }
+        $dayRepo->fillDates($startDate, $endDate);
+
+        return $this->render('calendar/year.html.twig', [
+            'repo' => $dayRepo,
+        ]);
+    }
+
     #[Route("/calendar/{slug}/month", name: "month")]
     public function month(Request $request, string $slug, EntityManagerInterface $em): Response
     {
