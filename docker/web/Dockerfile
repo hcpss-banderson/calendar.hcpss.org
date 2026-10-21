@@ -1,4 +1,4 @@
-FROM banderson/symfony:base
+FROM banderson/symfony:8.4
 
 ENV APP_ENV="prod"
 ENV COMPOSER_ALLOW_SUPERUSER=1
